@@ -105,6 +105,71 @@ body { font-feature-settings: "cv11", "ss01"; }
   animation: task-in 200ms ease-out both;
 }
 
+/* mountains */
+.mountains-bg {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+.mountains-bg svg {
+  display: block;
+  width: 100%;
+}
+
+/* falling leaves */
+.leaves-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+.leaf {
+  position: absolute;
+  top: -20px;
+  width: 9px;
+  height: 13px;
+  border-radius: 50% 0 50% 0;
+  opacity: 0;
+}
+
+@keyframes leaf-fall-a {
+  0%   { transform: translateY(0)    translateX(0)    rotate(0deg);   opacity: 0;    }
+  8%   {                                                               opacity: 0.28; }
+  45%  { transform: translateY(45vh) translateX(28px) rotate(175deg);                }
+  92%  {                                                               opacity: 0.28; }
+  100% { transform: translateY(108vh) translateX(-8px) rotate(355deg); opacity: 0;   }
+}
+@keyframes leaf-fall-b {
+  0%   { transform: translateY(0)     translateX(0)     rotate(40deg);  opacity: 0;    }
+  8%   {                                                                 opacity: 0.24; }
+  50%  { transform: translateY(50vh)  translateX(-36px) rotate(210deg);                }
+  92%  {                                                                 opacity: 0.24; }
+  100% { transform: translateY(108vh) translateX(18px)  rotate(400deg); opacity: 0;    }
+}
+@keyframes leaf-fall-c {
+  0%   { transform: translateY(0)     translateX(0)     rotate(-15deg); opacity: 0;    }
+  8%   {                                                                 opacity: 0.26; }
+  35%  { transform: translateY(35vh)  translateX(18px)  rotate(150deg);                }
+  65%  { transform: translateY(65vh)  translateX(-12px) rotate(275deg);                }
+  92%  {                                                                 opacity: 0.26; }
+  100% { transform: translateY(108vh) translateX(8px)   rotate(380deg); opacity: 0;    }
+}
+
+.leaf-1  { left:  7%; width: 9px;  height: 13px; background: #C2410C; animation: leaf-fall-a 11s  0s   infinite; }
+.leaf-2  { left: 17%; width: 8px;  height: 11px; background: #B45309; animation: leaf-fall-b 13s  1.8s infinite; }
+.leaf-3  { left: 27%; width: 10px; height: 14px; background: #92400E; animation: leaf-fall-c  9.5s 3.2s infinite; }
+.leaf-4  { left: 38%; width: 8px;  height: 12px; background: #D97706; animation: leaf-fall-a 12s  0.6s infinite; }
+.leaf-5  { left: 50%; width: 9px;  height: 13px; background: #C2410C; animation: leaf-fall-b 10s  2.4s infinite; }
+.leaf-6  { left: 61%; width: 11px; height: 15px; background: #A16207; animation: leaf-fall-c 14s  4.5s infinite; }
+.leaf-7  { left: 71%; width: 8px;  height: 11px; background: #B45309; animation: leaf-fall-a 11.5s 1.2s infinite; }
+.leaf-8  { left: 81%; width: 9px;  height: 13px; background: #92400E; animation: leaf-fall-b  9s  3.8s infinite; }
+.leaf-9  { left: 44%; width: 7px;  height: 10px; background: #D97706; animation: leaf-fall-c 15s  5.5s infinite; }
+.leaf-10 { left: 91%; width: 10px; height: 14px; background: #C2410C; animation: leaf-fall-a 12.5s 2.8s infinite; }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: .001ms !important;
