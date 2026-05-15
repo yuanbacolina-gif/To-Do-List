@@ -1,35 +1,39 @@
 (() => {
   "use strict";
 
-  let tasks    = [];
-  let filter   = "all";
-  let soundOn  = true;
+  let tasks = [];
+  let filter = "all";
+  let soundOn = true;
+  let musicOn = false;
   let pendingDeadline = null;
-  let pickedTaskId    = null;
-  let spinning        = false;
+  let pickedTaskId = null;
+  let spinning = false;
 
   const STORAGE_KEY = "todo.tasks.v1";
-  const SOUND_KEY   = "todo.sound.v1";
-  const FILTER_KEY  = "todo.filter.v1";
+  const SOUND_KEY = "todo.sound.v1";
+  const FILTER_KEY = "todo.filter.v1";
+  const MUSIC_KEY = "todo.music.v1";
 
   const $ = (sel) => document.querySelector(sel);
 
-  const elList          = $("#task-list");
-  const elEmpty         = $("#empty-state");
-  const elEmptyMsg      = $("#empty-message");
-  const elCounter       = $("#counter");
-  const elForm          = $("#add-form");
-  const elInput         = $("#task-input");
-  const elDeadline      = $("#deadline-input");
-  const elPending       = $("#pending-deadline");
-  const elPendingLabel  = $("#pending-deadline-label");
+  const elList = $("#task-list");
+  const elEmpty = $("#empty-state");
+  const elEmptyMsg = $("#empty-message");
+  const elCounter = $("#counter");
+  const elForm = $("#add-form");
+  const elInput = $("#task-input");
+  const elDeadline = $("#deadline-input");
+  const elPending = $("#pending-deadline");
+  const elPendingLabel = $("#pending-deadline-label");
   const elClearDeadline = $("#clear-deadline");
-  const elClearDone     = $("#clear-done");
-  const elSoundToggle   = $("#sound-toggle");
-  const elToday         = $("#today");
-  const tpl             = $("#task-template");
-  const elPickerRow     = $("#picker-row");
-  const elPickBtn       = $("#pick-btn");
+  const elClearDone = $("#clear-done");
+  const elSoundToggle = $("#sound-toggle");
+  const elMusicToggle = $("#music-toggle");
+  const elBgMusic = $("#bg-music");
+  const elToday = $("#today");
+  const tpl = $("#task-template");
+  const elPickerRow = $("#picker-row");
+  const elPickBtn = $("#pick-btn");
 
   function loadState() {
     try {
@@ -37,12 +41,14 @@
       if (raw) tasks = JSON.parse(raw);
     } catch { tasks = []; }
     soundOn = localStorage.getItem(SOUND_KEY) !== "0";
-    filter  = localStorage.getItem(FILTER_KEY) || "all";
+    musicOn = localStorage.getItem(MUSIC_KEY) === "1";
+    filter = localStorage.getItem(FILTER_KEY) || "all";
   }
 
   function saveTasks()  { localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks)); }
   function saveSound()  { localStorage.setItem(SOUND_KEY, soundOn ? "1" : "0"); }
   function saveFilter() { localStorage.setItem(FILTER_KEY, filter); }
+  function saveMusic()  { localStorage.setItem(MUSIC_KEY, musicOn ? "1" : "0"); }
 
   function uid() {
     return "t_" + (crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2));
@@ -58,30 +64,30 @@
   function formatRemaining(ms) {
     const abs = Math.abs(ms);
     const min = Math.round(abs / 60_000);
-    const hr  = Math.floor(min / 60);
+    const hr = Math.floor(min / 60);
     const day = Math.floor(hr / 24);
 
     if (ms <= 0) return "overdue";
-    if (min < 1)  return "now";
+    if (min < 1) return "now";
     if (min < 60) return `in ${min}m`;
-    if (hr  < 24) return `in ${hr}h ${min % 60}m`;
-    if (day < 7)  return day === 1 ? "tomorrow" : `in ${day}d`;
+    if (hr < 24) return `in ${hr}h ${min % 60}m`;
+    if (day < 7) return day === 1 ? "tomorrow" : `in ${day}d`;
     return new Date(Date.now() + ms).toLocaleDateString(undefined, { month: "short", day: "numeric" });
   }
 
   function deadlineStyle(deadline) {
     const diff = deadline - Date.now();
-    if (diff <= 0)            return { cls: "text-danger", urgent: true,  text: "overdue" };
-    if (diff < 60 * 60_000)   return { cls: "text-danger", urgent: true,  text: formatRemaining(diff) };
-    if (diff < 24 * 3600_000) return { cls: "text-warn",   urgent: false, text: formatRemaining(diff) };
-    return                           { cls: "text-muted",  urgent: false, text: formatRemaining(diff) };
+    if (diff <= 0) return { cls: "text-danger", urgent: true, text: "overdue" };
+    if (diff < 60 * 60_000) return { cls: "text-danger", urgent: true, text: formatRemaining(diff) };
+    if (diff < 24 * 3600_000) return { cls: "text-warn", urgent: false, text: formatRemaining(diff) };
+    return { cls: "text-muted", urgent: false, text: formatRemaining(diff) };
   }
 
   function formatDateHeader() {
     return new Date().toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" });
   }
 
-  // synth chime using Web Audio API — no audio file needed
+  // synth chime using web audio API no audio file needed
   let audioCtx = null;
   function playDing() {
     if (!soundOn) return;
@@ -102,7 +108,7 @@
       o.connect(g).connect(audioCtx.destination);
       o.start(t);
       o.stop(t + 0.3);
-    } catch {}
+    } catch { }
   }
 
   function addTask(text, deadline) {
@@ -164,7 +170,7 @@
 
   function visibleTasks() {
     if (filter === "active") return tasks.filter(t => !t.done);
-    if (filter === "done")   return tasks.filter(t =>  t.done);
+    if (filter === "done") return tasks.filter(t => t.done);
     return tasks;
   }
 
@@ -210,7 +216,7 @@
     node.querySelector(".task-text").textContent = task.text;
 
     const meta = node.querySelector(".task-meta");
-    const lbl  = node.querySelector(".meta-label");
+    const lbl = node.querySelector(".meta-label");
     if (task.deadline) {
       const s = deadlineStyle(task.deadline);
       meta.classList.remove("hidden");
@@ -233,8 +239,8 @@
       const t = tasks.find(x => x.id === li.dataset.id);
       if (!t || !t.deadline) return;
       const meta = li.querySelector(".task-meta");
-      const lbl  = li.querySelector(".meta-label");
-      const s    = deadlineStyle(t.deadline);
+      const lbl = li.querySelector(".meta-label");
+      const s = deadlineStyle(t.deadline);
       meta.classList.remove("text-danger", "text-warn", "text-muted");
       meta.classList.add(s.cls);
       meta.classList.toggle("urgent", s.urgent && !t.done);
@@ -244,7 +250,7 @@
 
   function clearPicked() {
     pickedTaskId = null;
-    spinning     = false;
+    spinning = false;
     elList.querySelectorAll(".picked").forEach(li => {
       li.classList.remove("picked");
       li.querySelectorAll(".picked-tag").forEach(tag => tag.remove());
@@ -275,7 +281,7 @@
   function playSpinStep(steps, i) {
     if (!spinning) return;
     if (i >= steps.length) {
-      spinning     = false;
+      spinning = false;
       pickedTaskId = steps[steps.length - 1].id;
       applyPickedClass(pickedTaskId);
       return;
@@ -361,6 +367,8 @@
     elClearDone.addEventListener("click", clearCompleted);
     elPickBtn.addEventListener("click", pickForMe);
 
+    elMusicToggle.addEventListener("click", toggleMusic);
+
     elSoundToggle.addEventListener("click", () => {
       soundOn = !soundOn;
       saveSound();
@@ -375,11 +383,29 @@
     elSoundToggle.setAttribute("aria-label", soundOn ? "Mute completion sound" : "Unmute completion sound");
   }
 
+  function updateMusicIcon() {
+    elMusicToggle.style.color = musicOn ? "var(--color-accent, #C2410C)" : "";
+    elMusicToggle.setAttribute("aria-label", musicOn ? "Pause background music" : "Play background music");
+  }
+
+  function toggleMusic() {
+    musicOn = !musicOn;
+    saveMusic();
+    updateMusicIcon();
+    if (musicOn) {
+      elBgMusic.volume = 0.35;
+      elBgMusic.play().catch(() => { musicOn = false; saveMusic(); updateMusicIcon(); });
+    } else {
+      elBgMusic.pause();
+    }
+  }
+
   function init() {
     loadState();
     elToday.textContent = formatDateHeader();
     setFilter(filter);
     updateSoundIcon();
+    updateMusicIcon();
     wireEvents();
     setInterval(tickAllCountdowns, 30_000);
   }

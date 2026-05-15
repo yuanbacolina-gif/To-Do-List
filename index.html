@@ -70,8 +70,16 @@
         stroke-linecap="round" stroke-linejoin="round">
         <path d="M16 3h5v5M4 20L21 3M16 21h5v-5M4 4l5 5" />
       </symbol>
+      <symbol id="i-music" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+        stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 18V5l12-2v13" />
+        <circle cx="6" cy="18" r="3" />
+        <circle cx="18" cy="16" r="3" />
+      </symbol>
     </defs>
   </svg>
+
+  <audio id="bg-music" src="audio/Joji - Die For You (Instrumental).mp3" loop preload="none"></audio>
 
   <!-- mountains background -->
   <div class="mountains-bg" aria-hidden="true">
@@ -99,13 +107,20 @@
 
     <div class="flex items-center justify-between text-xs sm:text-sm text-muted mb-10">
       <time id="today" class="tracking-wide uppercase"></time>
-      <button id="sound-toggle"
-        class="grid place-items-center w-9 h-9 rounded-full text-muted hover:text-ink hover:bg-subtle/60 transition"
-        aria-label="Toggle completion sound">
-        <svg class="w-[18px] h-[18px]">
-          <use href="#i-sound-on" />
-        </svg>
-      </button>
+      <div class="flex items-center gap-1">
+        <button id="music-toggle"
+          class="grid place-items-center w-9 h-9 rounded-full text-muted hover:text-ink hover:bg-subtle/60 transition"
+          aria-label="Play background music">
+          <svg class="w-[18px] h-[18px]"><use href="#i-music" /></svg>
+        </button>
+        <button id="sound-toggle"
+          class="grid place-items-center w-9 h-9 rounded-full text-muted hover:text-ink hover:bg-subtle/60 transition"
+          aria-label="Toggle completion sound">
+          <svg class="w-[18px] h-[18px]">
+            <use href="#i-sound-on" />
+          </svg>
+        </button>
+      </div>
     </div>
 
     <header class="mb-8">
