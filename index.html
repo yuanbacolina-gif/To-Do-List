@@ -148,18 +148,27 @@
     <input id="task-input" type="text" placeholder="what's next?" maxlength="140"
       class="flex-1 bg-transparent outline-none text-base placeholder:text-muted/70 py-1.5" required />
 
-    <label
-      class="relative grid place-items-center w-9 h-9 rounded-full text-muted hover:text-accent hover:bg-accentSoft/40 cursor-pointer transition"
-      title="Set a deadline">
-      <svg class="w-[18px] h-[18px]">
-        <use href="#i-calendar" />
-      </svg>
-      <!-- pointer-events-none stops it from swallowing the submit button tap on mobile -->
-      <!-- JS wireEvents() opens the picker programmatically on label click -->
-      <input id="deadline-input" type="datetime-local"
-        class="absolute inset-0 opacity-0 pointer-events-none"
-        aria-label="Deadline" />
-    </label>
+  <label
+  class="relative grid place-items-center w-9 h-9 rounded-full text-muted hover:text-accent hover:bg-accentSoft/40 cursor-pointer transition"
+  title="Set a deadline">
+
+  <svg class="w-[18px] h-[18px] pointer-events-none">
+    <use href="#i-calendar" />
+  </svg>
+
+  <input
+    id="deadline-input"
+    type="datetime-local"
+    class="hidden"
+    aria-label="Deadline" />
+
+  <button
+    type="button"
+    id="calendar-trigger"
+    class="absolute inset-0 opacity-0 cursor-pointer"
+    aria-label="Open calendar">
+  </button>
+</label>
 
     <button type="submit"
       class="grid place-items-center w-9 h-9 rounded-full bg-ink text-bg hover:bg-accent transition disabled:opacity-30"
