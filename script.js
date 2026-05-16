@@ -362,6 +362,17 @@ e.preventDefault();
 openDatePicker();
 });
 
+const calendarTrigger = document.getElementById("calendar-trigger");
+
+calendarTrigger.addEventListener("click", () => {
+  if (elDeadline.showPicker) {
+    elDeadline.showPicker();
+  } else {
+    elDeadline.focus();
+    elDeadline.click();
+  }
+});
+
 elDeadline.addEventListener(“change”, () => {
 if (!elDeadline.value) { setPendingDeadline(null); return; }
 const ms = new Date(elDeadline.value).getTime();
