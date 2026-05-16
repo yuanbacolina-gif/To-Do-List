@@ -352,11 +352,9 @@
       }
     });
 
-    elDeadline.addEventListener("change", () => {
-      if (!elDeadline.value) { setPendingDeadline(null); return; }
-      const ms = new Date(elDeadline.value).getTime();
-      if (Number.isFinite(ms)) setPendingDeadline(ms);
-    });
+    document.querySelector('label[title="Set a deadline"]').addEventListener("click", () => {
+  elDeadline.showPicker?.() || elDeadline.click();
+});
 
     elClearDeadline.addEventListener("click", () => setPendingDeadline(null));
 
