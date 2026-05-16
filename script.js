@@ -183,8 +183,8 @@
     const done = tasks.length - left;
 
     elCounter.textContent = tasks.length === 0
-      ? "nothing yet — write something below"
-      : `${left} left · ${done} done`;
+      ? "nothing yet â write something below"
+      : `${left} left Â· ${done} done`;
 
     if (visible.length === 0) {
       elEmpty.classList.remove("hidden");
@@ -273,7 +273,7 @@
     li.classList.add("picked");
     const tag = document.createElement("span");
     tag.className = "picked-tag";
-    tag.textContent = "start with this →";
+    tag.textContent = "start with this â";
     li.querySelector(".task-text").after(tag);
     li.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }
@@ -352,9 +352,11 @@
       }
     });
 
-    document.querySelector('label[title="Set a deadline"]').addEventListener("click", () => {
-  elDeadline.showPicker?.() || elDeadline.click();
-});
+    elDeadline.addEventListener("change", () => {
+      if (!elDeadline.value) { setPendingDeadline(null); return; }
+      const ms = new Date(elDeadline.value).getTime();
+      if (Number.isFinite(ms)) setPendingDeadline(ms);
+    });
 
     elClearDeadline.addEventListener("click", () => setPendingDeadline(null));
 
