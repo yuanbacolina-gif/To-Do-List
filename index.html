@@ -109,7 +109,7 @@
 
   <main class="relative z-10 mx-auto w-full max-w-xl px-4 sm:px-6 py-10 sm:py-16">
 
-
+```
 <div class="flex items-center justify-between text-xs sm:text-sm text-muted mb-10">
   <time id="today" class="tracking-wide uppercase"></time>
   <div class="flex items-center gap-1">
@@ -148,7 +148,7 @@
     <input id="task-input" type="text" placeholder="what's next?" maxlength="140"
       class="flex-1 min-w-0 bg-transparent outline-none text-base placeholder:text-muted/70 py-1" required />
 
-    <!-- calendar icon — clicking the label triggers the hidden input -->
+    <!-- calendar icon — the invisible input overlays the label so tapping it opens the picker -->
     <label
       class="relative grid place-items-center w-9 h-9 shrink-0 rounded-full text-muted hover:text-accent hover:bg-accentSoft/40 cursor-pointer transition"
       title="Set a deadline"
@@ -156,13 +156,11 @@
       <svg class="w-[18px] h-[18px]" aria-hidden="true">
         <use href="#i-calendar" />
       </svg>
-      <!-- hidden: triggered via JS showPicker(), not an overlay -->
       <input
         id="deadline-input"
         type="datetime-local"
-        class="sr-only"
+        class="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
         aria-label="Deadline"
-        tabindex="-1"
       />
     </label>
 
@@ -253,7 +251,7 @@
 <footer class="mt-16 text-center text-xs text-muted/80">
   "What you do today can improve all your tomorrows." — Ralph Marston
 </footer>
-
+```
 
   </main>
 
